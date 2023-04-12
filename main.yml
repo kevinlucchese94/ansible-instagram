@@ -1,0 +1,55 @@
+- name: Aprire Instagram, accedere e seguire 10 persone con il tag "lux"
+  hosts: localhost
+  tasks:
+  - name: Apri il browser Chrome
+    community.general.chrome:
+      headless: no
+      url: <https://www.instagram.com/>
+  - name: Aspetta che la pagina sia caricata
+    pause:
+      seconds: 5
+  - name: Fai clic sul pulsante "Accedi"
+    community.general.chrome:
+      headless: no
+      find_element: id:loginForm
+      click: class:LnkWr
+  - name: Inserisci le credenziali di accesso
+    community.general.chrome:
+      headless: no
+      find_element: name:username
+      send_keys: "{{ instagram_username }}"
+  - community.general.chrome:
+      headless: no
+      find_element: name:password
+      send_keys: "{{ instagram_password }}"
+  - community.general.chrome:
+      headless: no
+      find_element: xpath://*[@id='loginForm']/div/div[3]/button/div
+      click: xpath://*[@id='loginForm']/div/div[3]/button/div
+  - name: Aspetta che la pagina sia caricata
+    pause:
+      seconds: 5
+  - name: Cerca il tag "lux"
+    community.general.chrome:
+      headless: no
+      url: <https://www.instagram.com/explore/tags/lux/>
+  - name: Aspetta che la pagina sia caricata
+    pause:
+      seconds: 5
+  - name: Segui 10 persone con il tag "lux"
+    community.general.chrome:
+      headless: no
+      find_element: xpath://*[@id='react-root']/section/main/article/div[1]/div/div/div[1]/div[1]/a
+      click: xpath://*[@id='react-root']/section/main/article/div[1]/div/div/div[1]/div[1]/a
+  - name: Aspetta che la pagina sia caricata
+    pause:
+      seconds: 5
+    with_items: "{{ range(1, 11) }}"
+    community.general.chrome:
+      headless: no
+      find_element: xpath://*[@id='react-root']/section/main/div/header/section/div[1]/div[1]/span/span[1]/button
+      click: xpath://*[@id='react-root']/section/main/div/header/section/div[1]/div[1]/span/span[1]/button
+  - name: Chiudi il browser
+    community.general.chrome:
+      headless: no
+      command: quit
